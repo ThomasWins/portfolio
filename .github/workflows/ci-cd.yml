@@ -52,7 +52,8 @@ jobs:
           key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
           port: 22
           source: "artifact/*.jar"
-          target: "/home/ubuntu/portfolio-0.0.1-SNAPSHOT.jar"
+          target: "/home/ubuntu/"
+
 
       - name: Restart Spring Boot service
         uses: appleboy/ssh-action@v0.1.9
