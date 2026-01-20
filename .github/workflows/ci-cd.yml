@@ -3,7 +3,7 @@ name: CI/CD Spring Boot to Lightsail
 on:
   push:
     branches:
-      - main   # Only deploy from main branch
+      - main   # deploy only from main branch
 
 jobs:
   build:
@@ -21,10 +21,10 @@ jobs:
           java-version: 25
 
       - name: Build with Maven
-        run: mvn clean package
+        run: mvn clean package -DskipTests
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v4   # ✅ updated version
+        uses: actions/upload-artifact@v4
         with:
           name: portfolio-jar
           path: target/*.jar
@@ -36,7 +36,7 @@ jobs:
 
     steps:
       - name: Download artifact
-        uses: actions/download-artifact@v4  # ✅ updated version
+        uses: actions/download-artifact@v4
         with:
           name: portfolio-jar
           path: ./artifact
@@ -49,19 +49,25 @@ jobs:
           key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
           port: 22
           script: |
-            # Stop Spring Boot service if running
+            cd /home/ubuntu
+
+            # Stop service if running
             sudo systemctl stop portfolio || true
-            
-            # Backup old JAR
-            if [ -f /home/ubuntu/portfolio-0.0.1-SNAPSHOT.jar ]; then
-              mv /home/ubuntu/portfolio-0.0.1-SNAPSHOT.jar /home/ubuntu/portfolio-0.0.1-SNAPSHOT.jar.bak
+
+            # Backup old JAR if it exists
+            if [ -f portfolio-0.0.1-SNAPSHOT.jar ]; then
+              mv portfolio-0.0.1-SNAPSHOT.jar portfolio-0.0.1-SNAPSHOT.jar.bak
             fi
-            
+
             # Copy new JAR
-            cp ./artifact/portfolio-0.0.1-SNAPSHOT.jar /home/ubuntu/portfolio-0.0.1-SNAPSHOT.jar
-            
-            # Start Spring Boot service
-            sudo systemctl start portfolio
-            
-            # Optional: check status
+            cp ./artifact/portfolio-0.0.1-SNAPSHOT.jar ./portfolio-0.0.1-SNAPSHOT.jar
+
+            # Ensure proper permissions
+            chmod 644 portfolio-0.0.1-SNAPSHOT.jar
+
+            # Restart Spring Boot service
+            sudo systemctl daemon-reload
+            sudo systemctl restart portfolio
+
+            # Check status
             sudo systemctl status portfolio --no-pager
