@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+    </head>
+    <body>
+        <div th:fragment="privacy">
+            <!-- Privacy Policy Section-->
+            <section class="py-5">
+                <div class="container px-5 my-5">
+                    <div class="row gx-5 justify-content-center">
+                        <div class="col-lg-8 col-xl-7">
+                            <div class="text-center mb-5">
+                                <h1 class="display-5 fw-bolder mb-0"><span class="text-gradient d-inline">Privacy Policy</span></h1>
+                            </div>
+
+                            <!-- Data Collection -->
+                            <div class="mb-5">
+                                <h2 class="fw-bolder mb-3">Data Collection</h2>
+                                <p class="lead fw-normal text-muted mb-3">
+                                    I collect minimal data:
+                                </p>
+
+                                <div class="card shadow border-0 rounded-4 mb-4">
+                                    <div class="card-body p-4">
+                                        <h5 class="card-title fw-bolder mb-3">1. Server Logs</h5>
+                                        <p class="card-text text-muted mb-0">
+                                            The web server automatically records standard server logs when you visit, which may include your IP address and basic request information. These logs are maintained for server operations and security purposes only.
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <div class="card shadow border-0 rounded-4">
+                                    <div class="card-body p-4">
+                                        <h5 class="card-title fw-bolder mb-3">2. Contact Form Submissions</h5>
+                                        <p class="card-text text-muted mb-0">
+                                            When you submit the contact form, I collect the information you provide, including your name, email address, and message. This data is used solely to respond to your inquiry.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Data Usage -->
+                            <div class="mb-5">
+                                <h2 class="fw-bolder mb-3">How your Data is Being Used</h2>
+                                <p class="lead fw-normal text-muted">
+                                    I do not use analytics, cookies, or tracking services. Contact form data is used only to respond to your inquiry. I do not sell, trade, or share your personal information with third parties.
+                                </p>
+                            </div>
+
+                            <!-- Contact -->
+                            <div class="bg-light p-4 rounded-4">
+                                <h2 class="fw-bolder mb-3">Questions?</h2>
+                                <p class="lead fw-normal text-muted mb-3">
+                                    If you have any questions about our privacy practices, please feel free to contact me using the contact form.
+                                </p>
+                                <a class="btn btn-primary" th:href="@{/contact}">Contact Me</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </body>
+</html>

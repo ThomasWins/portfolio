@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+    </head>
+    <body>
+        <div th:fragment="terms">
+            <!-- Terms of Service Section-->
+            <section class="py-5">
+                <div class="container px-5 my-5">
+                    <div class="row gx-5 justify-content-center">
+                        <div class="col-lg-8 col-xl-7">
+                            <div class="text-center mb-5">
+                                <h1 class="display-5 fw-bolder mb-0"><span class="text-gradient d-inline">Terms of Service</span></h1>
+                            </div>
+
+                            <!-- Overview -->
+                            <div class="mb-5">
+                                <h2 class="fw-bolder mb-3">Overview</h2>
+                                <p class="lead fw-normal text-muted">
+                                    This is a personal portfolio website created by Thomas Winslow to showcase projects and skills. By using this website, you agree to these simple terms.
+                                </p>
+                            </div>
+
+                            <!-- Website Content -->
+                            <div class="mb-5">
+                                <h2 class="fw-bolder mb-3">Website Content</h2>
+                                <p class="lead fw-normal text-muted mb-3">
+                                    This website displays my portfolio, projects, resume, and professional information. You're welcome to:
+                                </p>
+                                <ul class="lead fw-normal text-muted">
+                                    <li>View and read the content</li>
+                                    <li>Share information about my portfolio</li>
+                                    <li>Use my work as a reference for learning</li>
+                                </ul>
+                                <p class="lead fw-normal text-muted mt-3">
+                                    Please do not copy or claim my projects as your own.
+                                </p>
+                            </div>
+
+                            <!-- Projects and Code -->
+                            <div class="mb-5">
+                                <h2 class="fw-bolder mb-3">Projects and Code</h2>
+                                <p class="lead fw-normal text-muted">
+                                    Code samples and projects displayed on this portfolio are provided for educational and demonstration purposes. You may reference them for learning, but please respect intellectual property rights.
+                                </p>
+                            </div>
+
+                            <!-- No Warranty -->
+                            <div class="mb-5">
+                                <h2 class="fw-bolder mb-3">No Warranty</h2>
+                                <p class="lead fw-normal text-muted">
+                                    This website and its content are provided "as is" without any warranties. I am not responsible for any issues or damages resulting from using this website or its content.
+                                </p>
+                            </div>
+
+                            <!-- Contact Form -->
+                            <div class="mb-5">
+                                <h2 class="fw-bolder mb-3">Contact Form</h2>
+                                <p class="lead fw-normal text-muted">
+                                    By submitting the contact form, you agree that I may use your information to respond to your inquiry.
+                                </p>
+                            </div>
+
+                            <!-- Contact -->
+                            <div class="bg-light p-4 rounded-4">
+                                <h2 class="fw-bolder mb-3">Questions?</h2>
+                                <p class="lead fw-normal text-muted mb-3">
+                                    If you have any questions about our privacy practices, please feel free to contact me using the contact form.
+                                </p>
+                                <a class="btn btn-primary" th:href="@{/contact}">Contact Me</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </body>
+</html>
