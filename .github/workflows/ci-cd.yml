@@ -26,20 +26,32 @@ jobs:
       - name: List target folder
         run: ls -l target/
 
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: portfolio-jar
+          path: target/*.jar
+
   deploy:
     name: Deploy to Lightsail
     runs-on: ubuntu-latest
     needs: build
 
     steps:
-      - name: Copy JAR directly to Lightsail
+      - name: Download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: portfolio-jar
+          path: ./artifact
+
+      - name: Upload artifact to Lightsail
         uses: appleboy/scp-action@v0.1.3
         with:
           host: ${{ secrets.LIGHTSAIL_IP }}
           username: ubuntu
           key: ${{ secrets.LIGHTSAIL_SSH_KEY }}
           port: 22
-          source: "target/*.jar"
+          source: "artifact/*.jar"
           target: "/home/ubuntu/portfolio-0.0.1-SNAPSHOT.jar"
 
       - name: Restart Spring Boot service
@@ -60,7 +72,7 @@ jobs:
               mv portfolio-0.0.1-SNAPSHOT.jar portfolio-0.0.1-SNAPSHOT.jar.bak
             fi
 
-            # The new JAR is already uploaded directly to /home/ubuntu
+            # The new JAR is already uploaded via SCP
             chmod 644 portfolio-0.0.1-SNAPSHOT.jar
 
             # Restart Spring Boot service
