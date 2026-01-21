@@ -64,20 +64,23 @@ jobs:
             # Stop service if running
             sudo systemctl stop portfolio || true
 
-            # Backup old JAR if it exists
-            if [ -f portfolio-0.0.1-SNAPSHOT.jar ]; then
-              mv portfolio-0.0.1-SNAPSHOT.jar portfolio-0.0.1-SNAPSHOT.jar.bak
+            DEPLOY_DIR=/home/ubuntu/artifact
+            JAR_NAME=portfolio-0.0.1-SNAPSHOT.jar
+
+            cd $DEPLOY_DIR || exit 1
+
+            # Backup old jar
+            if [ -f $JAR_NAME ]; then
+              mv $JAR_NAME ${JAR_NAME}.bak
             fi
 
-            # Move the newly uploaded JAR into place
-            mv *.jar portfolio-0.0.1-SNAPSHOT.jar
+            # Move uploaded jar into place
+            mv /home/ubuntu/*.jar $JAR_NAME
 
-            # Set proper permissions
-            chmod 644 portfolio-0.0.1-SNAPSHOT.jar
+            chmod 644 $JAR_NAME
 
-            # Reload systemd and restart service
             sudo systemctl daemon-reload
             sudo systemctl restart portfolio
 
-            # Check status
             sudo systemctl status portfolio --no-pager
+
