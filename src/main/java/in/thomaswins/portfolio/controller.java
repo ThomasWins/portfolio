@@ -6,7 +6,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import java.util.List;
 
 @Controller
@@ -40,18 +40,20 @@ public class controller {
     }
 
     @PostMapping("/contact")
-    @ResponseBody
     public String handleContactForm(
             @RequestParam String name,
             @RequestParam String email,
             @RequestParam String phone,
-            @RequestParam String message) {
+            @RequestParam String message,
+            RedirectAttributes redirectAttributes) {
         try {
             Contact contact = new Contact(name, email, phone, message);
             contactRepository.save(contact);
-            return "{\"success\": true, \"message\": \"Message saved successfully!\"}";
+            redirectAttributes.addFlashAttribute("successMessage", "Message sent successfully! Thank you for reaching out.");
+            return "redirect:/contact";
         } catch (Exception e) {
-            return "{\"success\": false, \"message\": \"Error saving message: " + e.getMessage() + "\"}";
+            redirectAttributes.addFlashAttribute("errorMessage", "Error sending message: " + e.getMessage());
+            return "redirect:/contact";
         }
     }
 
