@@ -64,7 +64,8 @@ jobs:
       - name: Restart Service via Tunnel
         run: |
           ssh ${{ secrets.REMOTE_USER }}@deploy.thomaswins.com << 'EOF'
-            echo "${{ secrets.REMOTE_PASSWORD }}" | sudo -S mv /tmp/app.jar /var/www/portfolio/app.jar
-            echo "${{ secrets.REMOTE_PASSWORD }}" | sudo -S chown portfolio:portfolio /var/www/portfolio/app.jar
-            echo "${{ secrets.REMOTE_PASSWORD }}" | sudo -S systemctl restart portfolio.service
+            sudo mv /tmp/app.jar /var/www/portfolio/app.jar
+            sudo chown portfolio:portfolio /var/www/portfolio/app.jar
+            sudo systemctl restart portfolio.service
+            sudo systemctl status portfolio.service --no-pager
           EOF
