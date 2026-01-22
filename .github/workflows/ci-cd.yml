@@ -36,16 +36,21 @@ jobs:
         with:
           name: portfolio-jar
 
-      - name: Deploy to Home PC via SCP
+      - name: Install Cloudflared
+        run: |
+          curl -L --output cloudflared.deb https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
+          sudo dpkg -i cloudflared.deb
+
+      - name: Deploy via Cloudflare Tunnel
         uses: appleboy/scp-action@v0.1.7
         with:
-          # Cloudflare Host
-          host: ${{ secrets.REMOTE_HOST }} 
+          host: deploy.thomaswins.com
           username: ${{ secrets.REMOTE_USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+          proxy_command: cloudflared access ssh-gen --hostname deploy.thomaswins.com
           source: "portfolio-0.0.1-SNAPSHOT.jar"
-          # Target our standardized web folder
-          target: "/tmp" 
+          target: "/tmp"
 
       - name: Move JAR and Restart Service
         uses: appleboy/ssh-action@v1.0.3
