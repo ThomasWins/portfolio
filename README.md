@@ -89,6 +89,7 @@ portfolio/
 - MySQL database hosted locally on Ubuntu home server
 - systemd service for automatic application startup and monitoring
 - Honeypots for botted contact form submissions
+- AI Labrynth for Bots! (nofollow links that contain AI-generated content to disrupt bots ignoring crawling standards)
 
 ## Database Schema
 
