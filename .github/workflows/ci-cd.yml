@@ -63,9 +63,10 @@ jobs:
 
       - name: Restart Service via Tunnel
         run: |
-          ssh ${{ secrets.REMOTE_USER }}@deploy.thomaswins.com << 'EOF'
+          # The -tt flag forces a TTY, which sudo often requires
+          ssh -tt ${{ secrets.REMOTE_USER }}@deploy.thomaswins.com << 'EOF'
             sudo mv /tmp/app.jar /var/www/portfolio/app.jar
             sudo chown portfolio:portfolio /var/www/portfolio/app.jar
             sudo systemctl restart portfolio.service
-            sudo systemctl status portfolio.service --no-pager
+            exit
           EOF
