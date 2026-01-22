@@ -45,14 +45,50 @@ public class controller {
             @RequestParam String email,
             @RequestParam String phone,
             @RequestParam String message,
+            @RequestParam(required = false) String website,
+            @RequestParam(required = false) String formLoadTime,
             RedirectAttributes redirectAttributes) {
         try {
+            // Bot protection: Check honeypot field
+            if (website != null && !website.isEmpty()) {
+                // Honeypot field was filled - likely a bot
+                redirectAttributes.addFlashAttribute("errorMessage", "Spam detected. Please try again.");
+                return "redirect:/contact";
+            }
+            
+            // Bot protection: Check form submission timing
+            if (formLoadTime != null && !formLoadTime.isEmpty()) {
+                try {
+                    long loadTime = Long.parseLong(formLoadTime);
+                    long currentTime = System.currentTimeMillis();
+                    long timeDiff = currentTime - loadTime;
+                    
+                    // If form submitted in less than 2 seconds, likely a bot
+                    if (timeDiff < 2000) {
+                        redirectAttributes.addFlashAttribute("errorMessage", "Form submitted too quickly. Please try again.");
+                        return "redirect:/contact";
+                    }
+                } catch (NumberFormatException e) {
+                    // Invalid timestamp format
+                }
+            }
+            
+            // Basic validation
+            if (name == null || name.trim().isEmpty() ||
+                email == null || email.trim().isEmpty() ||
+                phone == null || phone.trim().isEmpty() ||
+                message == null || message.trim().isEmpty()) {
+                redirectAttributes.addFlashAttribute("errorMessage", "All fields are required.");
+                return "redirect:/contact";
+            }
+            
+            // Save the contact
             Contact contact = new Contact(name, email, phone, message);
             contactRepository.save(contact);
             redirectAttributes.addFlashAttribute("successMessage", "Message sent successfully! Thank you for reaching out.");
             return "redirect:/contact";
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("errorMessage", "Error sending message: " + e.getMessage());
+            redirectAttributes.addFlashAttribute("errorMessage", "Error sending message. Please try again later.");
             return "redirect:/contact";
         }
     }
