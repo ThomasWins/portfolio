@@ -7,13 +7,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-import java.util.List;
 
 @Controller
 public class controller {
 
     @Autowired
     private ContactRepository contactRepository;
+
+    @Autowired
+    private EmailService emailService;
 
     @GetMapping({"/", "", "/home"})
     public String showHomePage(Model model) {
@@ -49,20 +51,13 @@ public class controller {
         try {
             Contact contact = new Contact(name, email, phone, message);
             contactRepository.save(contact);
+            emailService.sendContactFormEmail(name, email, phone, message);
             redirectAttributes.addFlashAttribute("successMessage", "Message sent successfully! Thank you for reaching out.");
             return "redirect:/contact";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Error sending message: " + e.getMessage());
             return "redirect:/contact";
         }
-    }
-
-    @GetMapping("/admin/submissions")
-    public String viewSubmissions(Model model) {
-        List<Contact> submissions = contactRepository.findAllByOrderByCreatedAtDesc();
-        model.addAttribute("submissions", submissions);
-        model.addAttribute("title", "Form Submissions");
-        return "submissions";
     }
 
     @GetMapping("/privacy")
@@ -76,6 +71,5 @@ public class controller {
         model.addAttribute("title", "Terms");
         return "master";
     }
-
 }
 
