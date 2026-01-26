@@ -52,16 +52,17 @@ public class controller {
             @RequestParam String email,
             @RequestParam(required = false) String phone,
             @RequestParam String message,
+            @RequestParam(required = false) String botTrap,
             @RequestParam(required = false) String formLoadTime,
             HttpServletRequest request,
             RedirectAttributes redirectAttributes) {
         try {
-            // Bot protection: Check honeypot phone field
-            if (phone != null && !phone.isEmpty()) {
+            // Bot protection: Check honeypot botTrap field
+            if (botTrap != null && !botTrap.isEmpty()) {
                 // Honeypot field was filled - BOT DETECTED!
                 String ipAddress = getClientIpAddress(request);
-                logger.warn("BOT TRAP TRIGGERED! IP: {} | Phone: {} | Name: {} | Email: {} | User-Agent: {}", 
-                    ipAddress, phone, name, email, request.getHeader("User-Agent"));
+                logger.warn("BOT TRAP TRIGGERED! IP: {} | BotTrap: {} | Name: {} | Email: {} | User-Agent: {}", 
+                    ipAddress, botTrap, name, email, request.getHeader("User-Agent"));
                 redirectAttributes.addFlashAttribute("errorMessage", "Spam detected.");
                 return "redirect:/contact";
             }
@@ -91,10 +92,11 @@ public class controller {
                 return "redirect:/contact";
             }
             
-            // Save the contact (no phone number)
-            Contact contact = new Contact(name, email, "", message);
+            // Save the contact with optional phone number
+            String phoneNumber = (phone != null && !phone.trim().isEmpty()) ? phone : "";
+            Contact contact = new Contact(name, email, phoneNumber, message);
             contactRepository.save(contact);
-            emailService.sendContactFormEmail(name, email, "", message);
+            emailService.sendContactFormEmail(name, email, phoneNumber, message);
             redirectAttributes.addFlashAttribute("successMessage", "Message sent successfully! Thank you for reaching out.");
             return "redirect:/contact";
         } catch (Exception e) {

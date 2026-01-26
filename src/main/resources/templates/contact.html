@@ -26,10 +26,10 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                                 </div>
                                 <form id="contactForm" method="POST" th:action="@{/contact}">
-                                    <!-- Bot trap: Hidden phone field that only bots will fill -->
+                                    <!-- Bot trap: Hidden field that only bots will fill -->
                                     <div style="position: absolute; left: -9999px; opacity: 0; pointer-events: none;" aria-hidden="true">
-                                        <label for="phone">Phone number (leave blank)</label>
-                                        <input type="text" id="phone" name="phone" tabindex="-1" autocomplete="off" placeholder="(123) 456-7890" />
+                                        <label for="botTrap">Phone number (leave blank)</label>
+                                        <input type="text" id="botTrap" name="botTrap" tabindex="-1" autocomplete="off" placeholder="(123) 456-7890" />
                                     </div>
                                     
                                     <!-- Timestamp for form load time validation -->
@@ -47,6 +47,12 @@
                                         <input class="form-control" id="email" name="email" type="email" placeholder="name@example.com" required />
                                         <label for="email">Email address</label>
                                         <div class="invalid-feedback">An email is required.</div>
+                                    </div>
+
+                                    <!-- Phone number input (optional)-->
+                                    <div class="form-floating mb-3">
+                                        <input class="form-control" id="phone" name="phone" type="tel" placeholder="(123) 456-7890" />
+                                        <label for="phone">Phone number (optional)</label>
                                     </div>
 
                                     <!-- Message input-->
