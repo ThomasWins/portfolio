@@ -7,9 +7,14 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import jakarta.servlet.http.HttpServletRequest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Controller
 public class controller {
+
+    private static final Logger logger = LoggerFactory.getLogger(controller.class);
 
     @Autowired
     private ContactRepository contactRepository;
@@ -45,16 +50,19 @@ public class controller {
     public String handleContactForm(
             @RequestParam String name,
             @RequestParam String email,
-            @RequestParam String phone,
+            @RequestParam(required = false) String phone,
             @RequestParam String message,
-            @RequestParam(required = false) String website,
             @RequestParam(required = false) String formLoadTime,
+            HttpServletRequest request,
             RedirectAttributes redirectAttributes) {
         try {
-            // Bot protection: Check honeypot field
-            if (website != null && !website.isEmpty()) {
-                // Honeypot field was filled - likely a bot
-                redirectAttributes.addFlashAttribute("errorMessage", "Spam detected. Please try again.");
+            // Bot protection: Check honeypot phone field
+            if (phone != null && !phone.isEmpty()) {
+                // Honeypot field was filled - BOT DETECTED!
+                String ipAddress = getClientIpAddress(request);
+                logger.warn("BOT TRAP TRIGGERED! IP: {} | Phone: {} | Name: {} | Email: {} | User-Agent: {}", 
+                    ipAddress, phone, name, email, request.getHeader("User-Agent"));
+                redirectAttributes.addFlashAttribute("errorMessage", "Spam detected.");
                 return "redirect:/contact";
             }
             
@@ -78,22 +86,46 @@ public class controller {
             // Basic validation
             if (name == null || name.trim().isEmpty() ||
                 email == null || email.trim().isEmpty() ||
-                phone == null || phone.trim().isEmpty() ||
                 message == null || message.trim().isEmpty()) {
                 redirectAttributes.addFlashAttribute("errorMessage", "All fields are required.");
                 return "redirect:/contact";
             }
             
-            // Save the contact
-            Contact contact = new Contact(name, email, phone, message);
+            // Save the contact (no phone number)
+            Contact contact = new Contact(name, email, "", message);
             contactRepository.save(contact);
-            emailService.sendContactFormEmail(name, email, phone, message);
+            emailService.sendContactFormEmail(name, email, "", message);
             redirectAttributes.addFlashAttribute("successMessage", "Message sent successfully! Thank you for reaching out.");
             return "redirect:/contact";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("errorMessage", "Error sending message. Please try again later.");
             return "redirect:/contact";
         }
+    }
+
+    // Helper method to get client IP address (handles proxies and load balancers)
+    private String getClientIpAddress(HttpServletRequest request) {
+        String ipAddress = request.getHeader("X-Forwarded-For");
+        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+            ipAddress = request.getHeader("Proxy-Client-IP");
+        }
+        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+            ipAddress = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+            ipAddress = request.getHeader("HTTP_CLIENT_IP");
+        }
+        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+            ipAddress = request.getHeader("HTTP_X_FORWARDED_FOR");
+        }
+        if (ipAddress == null || ipAddress.isEmpty() || "unknown".equalsIgnoreCase(ipAddress)) {
+            ipAddress = request.getRemoteAddr();
+        }
+        // Handle multiple IPs (take the first one)
+        if (ipAddress != null && ipAddress.contains(",")) {
+            ipAddress = ipAddress.split(",")[0].trim();
+        }
+        return ipAddress;
     }
 
     @GetMapping("/privacy")
