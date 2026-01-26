@@ -57,7 +57,8 @@ public class controller {
             HttpServletRequest request,
             RedirectAttributes redirectAttributes) {
         try {
-            // Bot protection: Check honeypot botTrap field (only if it has actual content)
+            // Bot protection disabled temporarily
+            /*
             if (botTrap != null && botTrap.length() > 0) {
                 String ipAddress = getClientIpAddress(request);
                 logger.warn("BOT TRAP TRIGGERED! IP: {} | BotTrap: {} | Name: {} | Email: {} | User-Agent: {}", 
@@ -65,7 +66,9 @@ public class controller {
                 redirectAttributes.addFlashAttribute("errorMessage", "Spam detected.");
                 return "redirect:/contact";
             }
+            */
             
+            /*
             // Bot protection: Check form submission timing
             if (formLoadTime != null && !formLoadTime.isEmpty()) {
                 try {
@@ -82,6 +85,7 @@ public class controller {
                     // Invalid timestamp format
                 }
             }
+            */
             
             // Basic validation
             if (name == null || name.trim().isEmpty() ||
