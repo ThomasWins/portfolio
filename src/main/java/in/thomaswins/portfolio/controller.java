@@ -57,14 +57,8 @@ public class controller {
             HttpServletRequest request,
             RedirectAttributes redirectAttributes) {
         try {
-            // Debug logging
-            logger.info("Contact form submission - botTrap value: '{}' (length: {})", 
-                botTrap, botTrap != null ? botTrap.length() : "null");
-            logger.info("formLoadTime: {}", formLoadTime);
-            
-            // Bot protection: Check honeypot botTrap field
-            if (botTrap != null && !botTrap.trim().isEmpty()) {
-                // Honeypot field was filled - BOT DETECTED!
+            // Bot protection: Check honeypot botTrap field (only if it has actual content)
+            if (botTrap != null && botTrap.length() > 0) {
                 String ipAddress = getClientIpAddress(request);
                 logger.warn("BOT TRAP TRIGGERED! IP: {} | BotTrap: {} | Name: {} | Email: {} | User-Agent: {}", 
                     ipAddress, botTrap, name, email, request.getHeader("User-Agent"));
