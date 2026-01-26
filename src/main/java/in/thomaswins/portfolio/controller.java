@@ -57,6 +57,11 @@ public class controller {
             HttpServletRequest request,
             RedirectAttributes redirectAttributes) {
         try {
+            // Debug logging
+            logger.info("Contact form submission - botTrap value: '{}' (length: {})", 
+                botTrap, botTrap != null ? botTrap.length() : "null");
+            logger.info("formLoadTime: {}", formLoadTime);
+            
             // Bot protection: Check honeypot botTrap field
             if (botTrap != null && !botTrap.trim().isEmpty()) {
                 // Honeypot field was filled - BOT DETECTED!
