@@ -58,7 +58,7 @@ public class controller {
             RedirectAttributes redirectAttributes) {
         try {
             // Bot protection: Check honeypot botTrap field
-            if (botTrap != null && !botTrap.isEmpty()) {
+            if (botTrap != null && !botTrap.trim().isEmpty()) {
                 // Honeypot field was filled - BOT DETECTED!
                 String ipAddress = getClientIpAddress(request);
                 logger.warn("BOT TRAP TRIGGERED! IP: {} | BotTrap: {} | Name: {} | Email: {} | User-Agent: {}", 
