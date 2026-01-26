@@ -57,35 +57,34 @@ public class controller {
             HttpServletRequest request,
             RedirectAttributes redirectAttributes) {
         try {
-            // Bot protection disabled temporarily
-            /*
-            if (botTrap != null && botTrap.length() > 0) {
+            // Bot protection: Check honeypot botTrap field
+            if (botTrap != null && botTrap.trim().length() > 0) {
                 String ipAddress = getClientIpAddress(request);
                 logger.warn("BOT TRAP TRIGGERED! IP: {} | BotTrap: {} | Name: {} | Email: {} | User-Agent: {}", 
                     ipAddress, botTrap, name, email, request.getHeader("User-Agent"));
-                redirectAttributes.addFlashAttribute("errorMessage", "Spam detected.");
+                redirectAttributes.addFlashAttribute("errorMessage", "Spam detected. Your IP has been logged.");
                 return "redirect:/contact";
             }
-            */
             
-            /*
-            // Bot protection: Check form submission timing
+            // Bot protection: Check form submission timing (increased to 1 second)
             if (formLoadTime != null && !formLoadTime.isEmpty()) {
                 try {
                     long loadTime = Long.parseLong(formLoadTime);
                     long currentTime = System.currentTimeMillis();
                     long timeDiff = currentTime - loadTime;
                     
-                    // If form submitted in less than 2 seconds, likely a bot
-                    if (timeDiff < 2000) {
+                    // If form submitted in less than 1 second, likely a bot
+                    if (timeDiff < 1000) {
+                        String ipAddress = getClientIpAddress(request);
+                        logger.warn("FAST SUBMISSION DETECTED! IP: {} | Time: {}ms | Name: {} | Email: {}",
+                            ipAddress, timeDiff, name, email);
                         redirectAttributes.addFlashAttribute("errorMessage", "Form submitted too quickly. Please try again.");
                         return "redirect:/contact";
                     }
                 } catch (NumberFormatException e) {
-                    // Invalid timestamp format
+                    // Invalid timestamp format - allow submission
                 }
             }
-            */
             
             // Basic validation
             if (name == null || name.trim().isEmpty() ||

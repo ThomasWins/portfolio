@@ -28,8 +28,8 @@
                                 <form id="contactForm" method="POST" th:action="@{/contact}">
                                     <!-- Bot trap: Hidden field that only bots will fill -->
                                     <div style="position: absolute; left: -9999px; opacity: 0; pointer-events: none;" aria-hidden="true">
-                                        <label for="botTrap">Phone number (leave blank)</label>
-                                        <input type="text" id="botTrap" name="botTrap" tabindex="-1" autocomplete="off" placeholder="(123) 456-7890" />
+                                        <label for="botTrap">Leave this field blank</label>
+                                        <input type="text" id="botTrap" name="botTrap" tabindex="-1" autocomplete="new-password" value="" />
                                     </div>
                                     
                                     <!-- Timestamp for form load time validation -->
