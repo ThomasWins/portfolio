@@ -60,8 +60,17 @@ public class controller {
             // Bot protection: Check honeypot botTrap field
             if (botTrap != null && botTrap.trim().length() > 0) {
                 String ipAddress = getClientIpAddress(request);
+                String userAgent = request.getHeader("User-Agent");
                 logger.warn("BOT TRAP TRIGGERED! IP: {} | BotTrap: {} | Name: {} | Email: {} | User-Agent: {}", 
-                    ipAddress, botTrap, name, email, request.getHeader("User-Agent"));
+                    ipAddress, botTrap, name, email, userAgent);
+                
+                // Send email alert to admin
+                try {
+                    emailService.sendHoneypotAlertEmail("HONEYPOT", ipAddress, name, email, botTrap, userAgent, null);
+                } catch (Exception e) {
+                    logger.error("Failed to send honeypot alert email", e);
+                }
+                
                 redirectAttributes.addFlashAttribute("errorMessage", "Spam detected. Your IP has been logged.");
                 return "redirect:/contact";
             }
@@ -76,8 +85,17 @@ public class controller {
                     // If form submitted in less than 1 second, likely a bot
                     if (timeDiff < 1000) {
                         String ipAddress = getClientIpAddress(request);
+                        String userAgent = request.getHeader("User-Agent");
                         logger.warn("FAST SUBMISSION DETECTED! IP: {} | Time: {}ms | Name: {} | Email: {}",
                             ipAddress, timeDiff, name, email);
+                        
+                        // Send email alert to admin
+                        try {
+                            emailService.sendHoneypotAlertEmail("FAST_SUBMISSION", ipAddress, name, email, null, userAgent, timeDiff);
+                        } catch (Exception e) {
+                            logger.error("Failed to send honeypot alert email", e);
+                        }
+                        
                         redirectAttributes.addFlashAttribute("errorMessage", "Form submitted too quickly. Please try again.");
                         return "redirect:/contact";
                     }
